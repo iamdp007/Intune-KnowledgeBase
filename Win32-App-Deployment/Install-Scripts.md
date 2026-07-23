@@ -1,42 +1,47 @@
-# Install Scripts
-
-This document contains PowerShell install scripts used during Win32 application deployment.
-
 ---
 
-## EXE Installation Script
+## PowerShell Script Installation
 
-```powershell
-$exe = Join-Path $PSScriptRoot "setup.exe"
+Many Win32 applications use PowerShell scripts instead of directly calling an EXE or MSI.
 
-Start-Process -FilePath $exe -ArgumentList "/S" -Wait
+### Basic PowerShell Script
 
-exit 0
+```cmd
+powershell.exe -ExecutionPolicy Bypass -File "Install.ps1"
+```
+
+### Example
+
+```cmd
+powershell.exe -ExecutionPolicy Bypass -File "Stickies Install.ps1"
 ```
 
 ### Explanation
 
-| Command | Purpose |
-|---------|----------|
-| `$PSScriptRoot` | Gets the current script folder |
-| `Join-Path` | Combines folder and file name |
-| `Start-Process` | Launches the installer |
-| `-Wait` | Waits until installation finishes |
-| `exit 0` | Returns Success to Intune |
+| Parameter | Purpose |
+|-----------|----------|
+| `powershell.exe` | Starts the PowerShell engine |
+| `-ExecutionPolicy Bypass` | Temporarily bypasses the execution policy for this session |
+| `-File` | Executes the specified PowerShell script |
 
----
+### When to Use
 
-## MSI Installation
+Use a PowerShell installation script when:
 
-```powershell
-Start-Process "msiexec.exe" -ArgumentList "/i app.msi /qn" -Wait
+- Installing multiple applications.
+- Performing pre-installation checks.
+- Creating folders or registry keys.
+- Copying files before or after installation.
+- Running custom installation logic.
 
-exit 0
+### Example Install Command in Intune
+
+```cmd
+powershell.exe -ExecutionPolicy Bypass -File "Install.ps1"
 ```
 
-### MSI Switches
+### Best Practice
 
-| Switch | Meaning |
-|---------|----------|
-| `/i` | Install |
-| `/qn` | Quiet installation |
+- Store the PowerShell script inside the `.intunewin` package.
+- Use `$PSScriptRoot` to reference files within the package.
+- Always return `exit 0` for success and a non-zero exit code for failure.
