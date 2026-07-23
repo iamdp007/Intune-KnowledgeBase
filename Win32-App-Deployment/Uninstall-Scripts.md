@@ -95,5 +95,60 @@ Select-Object DisplayName, UninstallString
 ## Best Practices
 
 - Test the uninstall command manually before using it in Intune.
+- ---
+
+## PowerShell Script Uninstall
+
+Many Win32 applications use PowerShell scripts instead of directly calling an EXE or MSI for uninstallation.
+
+### Basic PowerShell Script
+
+```cmd
+powershell.exe -ExecutionPolicy Bypass -File "Uninstall.ps1"
+```
+
+### Example
+
+```cmd
+powershell.exe -ExecutionPolicy Bypass -File "Stickies Uninstall.ps1"
+```
+
+### Explanation
+
+| Parameter | Purpose |
+|-----------|----------|
+| `powershell.exe` | Starts the PowerShell engine |
+| `-ExecutionPolicy Bypass` | Temporarily bypasses the execution policy for this session |
+| `-File` | Executes the specified PowerShell script |
+
+### When to Use
+
+Use a PowerShell uninstallation script when:
+
+- Uninstalling applications that require multiple steps.
+- Running cleanup tasks after the uninstall.
+- Removing registry keys.
+- Deleting files and folders.
+- Stopping services or processes before uninstalling.
+- Running custom PowerShell logic.
+
+### Example Uninstall Command in Intune
+
+```cmd
+powershell.exe -ExecutionPolicy Bypass -File "Uninstall.ps1"
+```
+
+Example used during my lab:
+
+```cmd
+powershell.exe -ExecutionPolicy Bypass -File "Stickies Uninstall.ps1"
+```
+
+### Best Practice
+
+- Store the PowerShell script inside the `.intunewin` package.
+- Use `$PSScriptRoot` to locate uninstall files included in the package.
+- Return `exit 0` when the uninstall is successful.
+- Return a non-zero exit code if the uninstall fails.
 - Use the registry to identify uninstall commands and Product GUIDs.
 - Verify that the application is completely removed before considering the uninstall successful.
